@@ -17,6 +17,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var questionTextView: TextView
 
+    private var trueCount: Int = 0
+    private var falseCount: Int = 0
+
     private val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -32,7 +35,12 @@ class MainActivity : AppCompatActivity() {
         questionTextView.setText(questionTextResId)
         trueButton.isVisible = true
         falseButton.isVisible = true
-        if (currentIndex == questionBank.size - 1) {
+        if (currentIndex == questionBank.size) {
+            nextButton.isVisible = false
+        }
+        if ((trueCount + falseCount) == questionBank.size) {
+            questionTextView.setText("Правильно: $trueCount\nНеправильно $falseCount")
+            buttonClick()
             nextButton.isVisible = false
         }
     }
@@ -46,8 +54,10 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = questionBank[currentIndex].answer
 
         val messageResId = if (userAnswer == correctAnswer) {
+            trueCount += 1
             R.string.correct_toast
         } else {
+            falseCount += 1
             R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
