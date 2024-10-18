@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity() {
             currentIndex = (currentIndex + 1) % questionBank.size
             updateQuestion()
         }
-
         updateQuestion()
     }
 }
