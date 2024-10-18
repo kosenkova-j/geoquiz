@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
@@ -29,6 +30,16 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
         questionTextView.setText(questionTextResId)
+        trueButton.isVisible = true
+        falseButton.isVisible = true
+        if (currentIndex == questionBank.size - 1) {
+            nextButton.isVisible = false
+        }
+    }
+
+    private fun buttonClick() {
+        trueButton.isVisible = false
+        falseButton.isVisible = false
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -65,15 +76,18 @@ class MainActivity : AppCompatActivity() {
 
         trueButton.setOnClickListener {
             checkAnswer(true)
+            buttonClick()
         }
         falseButton.setOnClickListener {
             checkAnswer(false)
+            buttonClick()
         }
 
         nextButton.setOnClickListener {
             currentIndex = (currentIndex + 1) % questionBank.size
             updateQuestion()
         }
+
         updateQuestion()
     }
 }
