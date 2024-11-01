@@ -1,6 +1,5 @@
 package com.example.geoquiz
 
-import Question
 import QuizViewModel
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -15,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 
-private const val TAG = "MainActivity"
+//private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
 
 
@@ -33,14 +32,14 @@ class MainActivity : AppCompatActivity() {
         questionTextView.setText(questionTextResId)
         trueButton.isVisible = true
         falseButton.isVisible = true
-//        if (currentIndex == questionBank.size) {
-//            nextButton.isVisible = false
-//        }
-//        if ((trueCount + falseCount) == questionBank.size) {
-//            questionTextView.text = "Правильно: $trueCount\nНеправильно $falseCount"
-//            buttonClick()
-//            nextButton.isVisible = false
-//        }
+        if (quizViewModel.currentIndex == 6) {
+            nextButton.isVisible = false
+        }
+        if ((trueCount + falseCount) == 6) {
+            questionTextView.text = "Правильно: $trueCount\nНеправильно $falseCount"
+            buttonClick()
+            nextButton.isVisible = false
+        }
     }
 
     private fun buttonClick() {
@@ -52,16 +51,22 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = quizViewModel.currentQuestionAnswer
 
         val messageResId = if (userAnswer == correctAnswer) {
-//            trueCount += 1
+            trueCount += 1
             R.string.correct_toast
         } else {
-//            falseCount += 1
+            falseCount += 1
             R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 
     private val quizViewModel: QuizViewModel by lazy { ViewModelProvider(this)[QuizViewModel::class.java] }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i(TAG, "onSaveInstanceState")
+        outState.putInt(KEY_INDEX, quizViewModel.currentIndex)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +78,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
+        quizViewModel.currentIndex = currentIndex
+
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         questionTextView = findViewById(R.id.question_text_view)
-//        currentIndex = savedInstanceState?.getInt("currentIndex") ?: 0
 
         trueButton.setOnClickListener {
             checkAnswer(true)
