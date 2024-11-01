@@ -35,7 +35,8 @@ class CheatActivity : AppCompatActivity() {
         answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
         answerTextView = findViewById(R.id.answer_text_view)
         showAnswerButton =findViewById(R.id.show_answer_button)
-        versionTextView.setText(Build.VERSION.RELEASE);
+        versionTextView = findViewById(R.id.version_name)
+        versionTextView.text = "API level " + Build.VERSION.SDK_INT.toString()
 
         showAnswerButton.setOnClickListener {
             val answerText = when {

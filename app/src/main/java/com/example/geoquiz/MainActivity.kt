@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         if ((trueCount + falseCount) == 6) {
             questionTextView.text = "Правильно: $trueCount\nНеправильно $falseCount"
             buttonClick()
+            falseCount = 0
+            trueCount = 0
+            cheatCount = 0
             nextButton.isVisible = false
         }
     }
