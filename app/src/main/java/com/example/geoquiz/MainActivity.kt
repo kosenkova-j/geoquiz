@@ -1,7 +1,10 @@
 package com.example.geoquiz
 
 import Question
+import QuizViewModel
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -10,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+
+private const val TAG = "MainActivity"
+private const val KEY_INDEX = "index"
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
@@ -20,29 +28,19 @@ class MainActivity : AppCompatActivity() {
     private var trueCount: Int = 0
     private var falseCount: Int = 0
 
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-    private var currentIndex = 0
-
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
         trueButton.isVisible = true
         falseButton.isVisible = true
-        if (currentIndex == questionBank.size) {
-            nextButton.isVisible = false
-        }
-        if ((trueCount + falseCount) == questionBank.size) {
-            questionTextView.setText("Правильно: $trueCount\nНеправильно $falseCount")
-            buttonClick()
-            nextButton.isVisible = false
-        }
+//        if (currentIndex == questionBank.size) {
+//            nextButton.isVisible = false
+//        }
+//        if ((trueCount + falseCount) == questionBank.size) {
+//            questionTextView.text = "Правильно: $trueCount\nНеправильно $falseCount"
+//            buttonClick()
+//            nextButton.isVisible = false
+//        }
     }
 
     private fun buttonClick() {
@@ -51,22 +49,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
 
         val messageResId = if (userAnswer == correctAnswer) {
-            trueCount += 1
+//            trueCount += 1
             R.string.correct_toast
         } else {
-            falseCount += 1
+//            falseCount += 1
             R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("currentIndex", currentIndex)
-    }
+    private val quizViewModel: QuizViewModel by lazy { ViewModelProvider(this)[QuizViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         questionTextView = findViewById(R.id.question_text_view)
-        currentIndex = savedInstanceState?.getInt("currentIndex") ?: 0
+//        currentIndex = savedInstanceState?.getInt("currentIndex") ?: 0
 
         trueButton.setOnClickListener {
             checkAnswer(true)
@@ -94,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            currentIndex = (currentIndex + 1) % questionBank.size
+            quizViewModel.moveToNext()
             updateQuestion()
         }
         updateQuestion()
