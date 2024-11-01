@@ -30,6 +30,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/show_answer_button"/>
+        <TextView
+            android:id="@+id/version_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            tools:textColor="@color/cardview_shadow_start_color"
+            tools:text="@string/api_level"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

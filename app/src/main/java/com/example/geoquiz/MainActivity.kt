@@ -30,12 +30,17 @@ class MainActivity : AppCompatActivity() {
 
     private var trueCount: Int = 0
     private var falseCount: Int = 0
+    private var cheatCount: Int = 0
 
     private fun updateQuestion() {
         val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
         trueButton.isVisible = true
         falseButton.isVisible = true
+        cheatButton.isVisible = true
+        if (cheatCount >= 3) {
+            cheatButton.isVisible = false
+        }
         if (quizViewModel.currentIndex == 6) {
             nextButton.isVisible = false
         }
@@ -107,13 +112,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         cheatButton.setOnClickListener {
+            cheatButton.isVisible = false
+            cheatCount += 1
             val answerIsTrue = quizViewModel.currentQuestionAnswer
             val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
             startActivityForResult(intent, REQUEST_CODE_CHEAT)
-
         }
 
         nextButton.setOnClickListener {
+            quizViewModel.isCheater = false
             quizViewModel.moveToNext()
             updateQuestion()
         }
